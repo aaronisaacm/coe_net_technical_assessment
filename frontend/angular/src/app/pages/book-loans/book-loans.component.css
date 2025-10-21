@@ -1,0 +1,40 @@
+.loan-row {
+  transition: all 0.2s ease;
+}
+
+.loan-row:hover {
+  background-color: rgba(13, 202, 240, 0.05);
+}
+
+.modal.show {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-backdrop.show {
+  opacity: 0.5;
+}
+
+.bi {
+  font-family: 'bootstrap-icons' !important;
+}
+
+/* Bootstrap Icons fallback */
+.bi-journal-check::before { content: "📋"; }
+.bi-plus-circle::before { content: "➕"; }
+.bi-check-circle::before { content: "✅"; }
+.bi-check2-circle::before { content: "✔️"; }
+.bi-exclamation-triangle::before { content: "⚠️"; }
+.bi-search::before { content: "🔍"; }
+.bi-person-circle::before { content: "👤"; }
+.bi-trash::before { content: "🗑️"; }
+.bi-x-circle::before { content: "❌"; }
+
+.card {
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+

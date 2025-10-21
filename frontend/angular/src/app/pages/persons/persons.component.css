@@ -1,0 +1,31 @@
+.person-row {
+  transition: all 0.2s ease;
+}
+
+.person-row:hover {
+  background-color: rgba(25, 135, 84, 0.05);
+}
+
+.modal.show {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-backdrop.show {
+  opacity: 0.5;
+}
+
+.bi {
+  font-family: 'bootstrap-icons' !important;
+}
+
+/* Bootstrap Icons fallback */
+.bi-people::before { content: "👥"; }
+.bi-person-plus::before { content: "➕👤"; }
+.bi-person-circle::before { content: "👤"; }
+.bi-check-circle::before { content: "✅"; }
+.bi-exclamation-triangle::before { content: "⚠️"; }
+.bi-search::before { content: "🔍"; }
+.bi-pencil::before { content: "✏️"; }
+.bi-trash::before { content: "🗑️"; }
+.bi-x-circle::before { content: "❌"; }
+

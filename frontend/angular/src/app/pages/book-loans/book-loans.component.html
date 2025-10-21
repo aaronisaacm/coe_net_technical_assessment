@@ -1,0 +1,336 @@
+<div class="container-fluid py-4">
+  <!-- Header -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1 class="display-5 fw-bold text-info">
+            <i class="bi bi-journal-check"></i> Book Loans
+          </h1>
+          <p class="text-muted">Manage book lending and returns</p>
+        </div>
+        <button class="btn btn-info btn-lg text-white" (click)="openLoanModal()">
+          <i class="bi bi-plus-circle"></i> Create New Loan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Alert -->
+  <div class="row" *ngIf="successMessage">
+    <div class="col-12">
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle"></i> {{ successMessage }}
+        <button type="button" class="btn-close" (click)="successMessage = ''"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error Alert -->
+  <div class="row" *ngIf="error && !showLoanModal && !showReturnModal">
+    <div class="col-12">
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle"></i> {{ error }}
+        <button type="button" class="btn-close" (click)="error = ''"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filters and Search -->
+  <div class="row mb-4">
+    <div class="col-md-4 mb-3">
+      <label class="form-label fw-bold">Filter by Status</label>
+      <select class="form-select form-select-lg" [(ngModel)]="filterStatus" (change)="onFilterChange()">
+        <option value="all">All Loans</option>
+        <option value="active">Active Loans</option>
+        <option value="returned">Returned</option>
+        <option value="overdue">Overdue</option>
+      </select>
+    </div>
+    <div class="col-md-8 mb-3">
+      <label class="form-label fw-bold">Search</label>
+      <div class="input-group input-group-lg">
+        <span class="input-group-text bg-white">
+          <i class="bi bi-search"></i>
+        </span>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search by book name or person..."
+          [(ngModel)]="searchTerm"
+          (input)="onSearchChange()">
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="row mb-4">
+    <div class="col-md-3 mb-3">
+      <div class="card bg-primary text-white">
+        <div class="card-body">
+          <h6 class="card-title">Total Loans</h6>
+          <h2 class="mb-0">{{ loans.length }}</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3">
+      <div class="card bg-warning text-white">
+        <div class="card-body">
+          <h6 class="card-title">Active</h6>
+          <h2 class="mb-0">{{ (loans | filter: 'isReturned' : false).length }}</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3">
+      <div class="card bg-danger text-white">
+        <div class="card-body">
+          <h6 class="card-title">Overdue</h6>
+          <h2 class="mb-0">{{ (loans | filter: 'isOverdue' : true).length }}</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3 mb-3">
+      <div class="card bg-success text-white">
+        <div class="card-body">
+          <h6 class="card-title">Returned</h6>
+          <h2 class="mb-0">{{ (loans | filter: 'isReturned' : true).length }}</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div class="row" *ngIf="loading && !showLoanModal && !showReturnModal">
+    <div class="col-12 text-center py-5">
+      <div class="spinner-border text-info" role="status" style="width: 3rem; height: 3rem;">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-3 text-muted">Loading loans...</p>
+    </div>
+  </div>
+
+  <!-- Loans Table -->
+  <div class="row" *ngIf="!loading || showLoanModal || showReturnModal">
+    <div class="col-12">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead class="table-info">
+                <tr>
+                  <th>ID</th>
+                  <th>Book</th>
+                  <th>Borrower</th>
+                  <th>Loan Date</th>
+                  <th>Due Date</th>
+                  <th>Return Date</th>
+                  <th>Status</th>
+                  <th class="text-end">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let loan of filteredLoans" class="loan-row">
+                  <td>
+                    <span class="badge bg-info">{{ loan.bookLoanId }}</span>
+                  </td>
+                  <td>
+                    <strong class="text-primary">{{ loan.book?.bookName || 'N/A' }}</strong>
+                    <br>
+                    <small class="text-muted">by {{ loan.book?.author || 'Unknown' }}</small>
+                  </td>
+                  <td>
+                    <i class="bi bi-person-circle"></i> {{ loan.person?.name || 'N/A' }} {{ loan.person?.lastName || '' }}
+                  </td>
+                  <td>{{ formatDate(loan.loanDate) }}</td>
+                  <td>
+                    <span [class.text-danger]="loan.isOverdue && !loan.isReturned">
+                      {{ formatDate(loan.dueDate) }}
+                    </span>
+                  </td>
+                  <td>
+                    <span *ngIf="loan.returnDate">{{ formatDate(loan.returnDate) }}</span>
+                    <span *ngIf="!loan.returnDate" class="text-muted">-</span>
+                  </td>
+                  <td>
+                    <span class="badge" [ngClass]="getStatusBadgeClass(loan)">
+                      {{ getStatusText(loan) }}
+                    </span>
+                  </td>
+                  <td class="text-end">
+                    <div class="btn-group" role="group">
+                      <button
+                        class="btn btn-sm btn-outline-success"
+                        (click)="openReturnModal(loan)"
+                        *ngIf="!loan.isReturned"
+                        title="Return Book">
+                        <i class="bi bi-check2-circle"></i> Return
+                      </button>
+                      <button
+                        class="btn btn-sm btn-outline-danger"
+                        (click)="deleteLoan(loan)"
+                        title="Delete Loan">
+                        <i class="bi bi-trash"></i>
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="row" *ngIf="!loading && filteredLoans.length === 0">
+    <div class="col-12 text-center py-5">
+      <i class="bi bi-journal-check display-1 text-muted"></i>
+      <h3 class="mt-3">No loans found</h3>
+      <p class="text-muted">
+        {{ searchTerm || filterStatus !== 'all' ? 'Try adjusting your filters' : 'Start by creating a new loan!' }}
+      </p>
+      <button class="btn btn-info text-white" (click)="openLoanModal()" *ngIf="!searchTerm && filterStatus === 'all'">
+        <i class="bi bi-plus-circle"></i> Create Your First Loan
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Create Loan Modal -->
+<div class="modal fade" [class.show]="showLoanModal" [style.display]="showLoanModal ? 'block' : 'none'" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-info text-white">
+        <h5 class="modal-title">
+          <i class="bi bi-plus-circle"></i> Create New Loan
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeLoanModal()"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Error Alert in Modal -->
+        <div class="alert alert-danger" *ngIf="error">
+          <i class="bi bi-exclamation-triangle"></i> {{ error }}
+        </div>
+
+        <form>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="personId" class="form-label fw-bold">Select Borrower *</label>
+              <select
+                class="form-select form-select-lg"
+                id="personId"
+                [(ngModel)]="currentLoan.personId"
+                name="personId"
+                required>
+                <option value="">Choose a person...</option>
+                <option *ngFor="let person of persons" [value]="person.personId">
+                  {{ person.name }} {{ person.lastName }}
+                </option>
+              </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="bookId" class="form-label fw-bold">Select Book *</label>
+              <select
+                class="form-select form-select-lg"
+                id="bookId"
+                [(ngModel)]="currentLoan.bookId"
+                name="bookId"
+                required>
+                <option value="">Choose a book...</option>
+                <option *ngFor="let book of books" [value]="book.bookId">
+                  {{ book.bookName }} - {{ book.author }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label for="loanDate" class="form-label fw-bold">Loan Date *</label>
+              <input
+                type="date"
+                class="form-control form-control-lg"
+                id="loanDate"
+                [(ngModel)]="currentLoan.loanDate"
+                name="loanDate"
+                required>
+            </div>
+
+            <div class="col-md-6 mb-3">
+              <label for="dueDate" class="form-label fw-bold">Due Date *</label>
+              <input
+                type="date"
+                class="form-control form-control-lg"
+                id="dueDate"
+                [(ngModel)]="currentLoan.dueDate"
+                name="dueDate"
+                required>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeLoanModal()">
+          <i class="bi bi-x-circle"></i> Cancel
+        </button>
+        <button type="button" class="btn btn-info text-white" (click)="createLoan()" [disabled]="loading">
+          <span class="spinner-border spinner-border-sm me-2" *ngIf="loading"></span>
+          <i class="bi bi-check-circle" *ngIf="!loading"></i>
+          Create Loan
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Return Book Modal -->
+<div class="modal fade" [class.show]="showReturnModal" [style.display]="showReturnModal ? 'block' : 'none'" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title">
+          <i class="bi bi-check2-circle"></i> Return Book
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeReturnModal()"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Error Alert in Modal -->
+        <div class="alert alert-danger" *ngIf="error">
+          <i class="bi bi-exclamation-triangle"></i> {{ error }}
+        </div>
+
+        <div *ngIf="selectedLoanForReturn">
+          <p><strong>Book:</strong> {{ selectedLoanForReturn.book?.bookName }}</p>
+          <p><strong>Borrower:</strong> {{ selectedLoanForReturn.person?.name }} {{ selectedLoanForReturn.person?.lastName }}</p>
+          <p><strong>Due Date:</strong> {{ formatDate(selectedLoanForReturn.dueDate) }}</p>
+
+          <div class="mb-3 mt-4">
+            <label for="returnDate" class="form-label fw-bold">Return Date *</label>
+            <input
+              type="date"
+              class="form-control form-control-lg"
+              id="returnDate"
+              [(ngModel)]="returnDate"
+              name="returnDate"
+              required>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeReturnModal()">
+          <i class="bi bi-x-circle"></i> Cancel
+        </button>
+        <button type="button" class="btn btn-success" (click)="returnBook()" [disabled]="loading">
+          <span class="spinner-border spinner-border-sm me-2" *ngIf="loading"></span>
+          <i class="bi bi-check-circle" *ngIf="!loading"></i>
+          Confirm Return
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Backdrop -->
+<div class="modal-backdrop fade" [class.show]="showLoanModal || showReturnModal" *ngIf="showLoanModal || showReturnModal"></div>

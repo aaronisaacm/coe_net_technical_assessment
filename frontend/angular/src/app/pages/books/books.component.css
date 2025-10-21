@@ -1,0 +1,42 @@
+.hover-shadow {
+  transition: all 0.3s ease;
+}
+
+.hover-shadow:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.card-text {
+  color: #6c757d;
+  line-height: 1.6;
+}
+
+.modal.show {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-backdrop.show {
+  opacity: 0.5;
+}
+
+.bi {
+  font-family: 'bootstrap-icons' !important;
+}
+
+/* Bootstrap Icons fallback */
+.bi-book::before { content: "📚"; }
+.bi-plus-circle::before { content: "➕"; }
+.bi-check-circle::before { content: "✅"; }
+.bi-exclamation-triangle::before { content: "⚠️"; }
+.bi-search::before { content: "🔍"; }
+.bi-person::before { content: "👤"; }
+.bi-pencil::before { content: "✏️"; }
+.bi-trash::before { content: "🗑️"; }
+.bi-x-circle::before { content: "❌"; }
+

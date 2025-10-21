@@ -1,0 +1,127 @@
+.hero-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="none"/><circle cx="50" cy="50" r="2" fill="rgba(255,255,255,0.1)"/></svg>') repeat;
+  opacity: 0.3;
+}
+
+.hero-section .container {
+  position: relative;
+  z-index: 1;
+}
+
+.feature-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  padding: 20px;
+}
+
+.feature-card {
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+  color: white;
+  transition: transform 0.3s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+
+.feature-card:hover {
+  transform: translateY(-10px);
+}
+
+.feature-card i {
+  font-size: 3rem;
+  margin-bottom: 15px;
+  display: block;
+}
+
+.feature-card h3 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.feature-card p {
+  margin: 0;
+  opacity: 0.9;
+}
+
+.features-section {
+  background-color: #f8f9fa;
+}
+
+.feature-item {
+  text-align: center;
+  padding: 30px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.feature-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.feature-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 2rem;
+  color: white;
+}
+
+.feature-item h4 {
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.bi {
+  font-family: 'bootstrap-icons' !important;
+}
+
+/* Bootstrap Icons fallback */
+.bi-speedometer2::before { content: "📊"; }
+.bi-info-circle::before { content: "ℹ️"; }
+.bi-book::before { content: "📚"; }
+.bi-people::before { content: "👥"; }
+.bi-journal-check::before { content: "📋"; }
+.bi-graph-up::before { content: "📈"; }
+.bi-lightning::before { content: "⚡"; }
+.bi-shield-check::before { content: "🛡️"; }
+.bi-phone::before { content: "📱"; }
+.bi-bell::before { content: "🔔"; }
+.bi-search::before { content: "🔍"; }
+.bi-bar-chart::before { content: "📊"; }
+
+@media (max-width: 991px) {
+  .feature-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-section {
+    min-height: auto;
+    padding: 60px 0;
+  }
+}
+

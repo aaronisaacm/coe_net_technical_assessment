@@ -1,0 +1,56 @@
+<div class="sidebar-banner">
+  <img src="/assets/sidebar-banner.png" alt="Book Loan Management" aria-hidden="true">
+  <div class="banner-overlay">
+    <h5 class="text-white mb-0">Book Loan System</h5>
+  </div>
+</div>
+
+<!-- User Info -->
+<div class="user-info">
+  <i class="bi bi-person-circle"></i>
+  <span>{{ username }}</span>
+</div>
+
+<div class="sidebar-nav">
+  <a [routerLink]="'dashboard'" routerLinkActive="active" class="sidebar-link">
+    <i class="bi bi-speedometer2"></i>
+    <span>Dashboard</span>
+  </a>
+
+  <div class="sidebar-divider">Management</div>
+
+  <a [routerLink]="'books'" routerLinkActive="active" class="sidebar-link">
+    <i class="bi bi-book"></i>
+    <span>Books</span>
+  </a>
+
+  <a [routerLink]="'persons'" routerLinkActive="active" class="sidebar-link">
+    <i class="bi bi-people"></i>
+    <span>Members</span>
+  </a>
+
+  <a [routerLink]="'book-loans'" routerLinkActive="active" class="sidebar-link">
+    <i class="bi bi-journal-check"></i>
+    <span>Loans</span>
+  </a>
+
+  <div class="sidebar-divider">Information</div>
+
+  <a [routerLink]="'home'" routerLinkActive="active" class="sidebar-link">
+    <i class="bi bi-house"></i>
+    <span>Home</span>
+  </a>
+
+  <a [routerLink]="'about'" routerLinkActive="active" class="sidebar-link">
+    <i class="bi bi-info-circle"></i>
+    <span>About</span>
+  </a>
+
+  <div class="sidebar-divider"></div>
+
+  <!-- Logout Button -->
+  <a (click)="logout()" class="sidebar-link logout-link">
+    <i class="bi bi-box-arrow-right"></i>
+    <span>Logout</span>
+  </a>
+</div>

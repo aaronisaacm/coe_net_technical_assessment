@@ -1,0 +1,186 @@
+<div class="container-fluid py-4">
+  <!-- Header -->
+  <div class="row mb-4">
+    <div class="col-12">
+      <div class="d-flex justify-content-between align-items-center">
+        <div>
+          <h1 class="display-5 fw-bold text-primary">
+            <i class="bi bi-book"></i> Books Management
+          </h1>
+          <p class="text-muted">Manage your library's book collection</p>
+        </div>
+        <button class="btn btn-primary btn-lg" (click)="openAddModal()">
+          <i class="bi bi-plus-circle"></i> Add New Book
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Success Alert -->
+  <div class="row" *ngIf="successMessage">
+    <div class="col-12">
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle"></i> {{ successMessage }}
+        <button type="button" class="btn-close" (click)="successMessage = ''"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Error Alert -->
+  <div class="row" *ngIf="error && !showModal">
+    <div class="col-12">
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle"></i> {{ error }}
+        <button type="button" class="btn-close" (click)="error = ''"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <div class="input-group input-group-lg">
+        <span class="input-group-text bg-white">
+          <i class="bi bi-search"></i>
+        </span>
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Search by title, author, or description..."
+          [(ngModel)]="searchTerm"
+          (input)="searchBooks()">
+      </div>
+    </div>
+    <div class="col-md-6 d-flex align-items-center">
+      <span class="badge bg-secondary fs-6">
+        {{ filteredBooks.length }} {{ filteredBooks.length === 1 ? 'book' : 'books' }} found
+      </span>
+    </div>
+  </div>
+
+  <!-- Loading Spinner -->
+  <div class="row" *ngIf="loading && !showModal">
+    <div class="col-12 text-center py-5">
+      <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-3 text-muted">Loading books...</p>
+    </div>
+  </div>
+
+  <!-- Books Grid -->
+  <div class="row g-4" *ngIf="!loading || showModal">
+    <div class="col-md-6 col-lg-4" *ngFor="let book of filteredBooks">
+      <div class="card h-100 shadow-sm hover-shadow">
+        <div class="card-body d-flex flex-column">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div class="flex-grow-1">
+              <h5 class="card-title text-primary fw-bold">{{ book.bookName }}</h5>
+              <h6 class="card-subtitle mb-2 text-muted">
+                <i class="bi bi-person"></i> {{ book.author }}
+              </h6>
+            </div>
+            <span class="badge bg-primary">ID: {{ book.bookId }}</span>
+          </div>
+
+          <p class="card-text flex-grow-1">{{ book.description }}</p>
+
+          <div class="d-flex gap-2 mt-3">
+            <button class="btn btn-outline-primary flex-fill" (click)="openEditModal(book)">
+              <i class="bi bi-pencil"></i> Edit
+            </button>
+            <button class="btn btn-outline-danger flex-fill" (click)="deleteBook(book)">
+              <i class="bi bi-trash"></i> Delete
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div class="row" *ngIf="!loading && filteredBooks.length === 0">
+    <div class="col-12 text-center py-5">
+      <i class="bi bi-book display-1 text-muted"></i>
+      <h3 class="mt-3">No books found</h3>
+      <p class="text-muted">
+        {{ searchTerm ? 'Try a different search term' : 'Start by adding your first book!' }}
+      </p>
+      <button class="btn btn-primary" (click)="openAddModal()" *ngIf="!searchTerm">
+        <i class="bi bi-plus-circle"></i> Add Your First Book
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="modal fade" [class.show]="showModal" [style.display]="showModal ? 'block' : 'none'" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">
+          <i class="bi" [class.bi-plus-circle]="!isEditMode" [class.bi-pencil]="isEditMode"></i>
+          {{ isEditMode ? 'Edit Book' : 'Add New Book' }}
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeModal()"></button>
+      </div>
+      <div class="modal-body">
+        <!-- Error Alert in Modal -->
+        <div class="alert alert-danger" *ngIf="error">
+          <i class="bi bi-exclamation-triangle"></i> {{ error }}
+        </div>
+
+        <form>
+          <div class="mb-3">
+            <label for="bookName" class="form-label fw-bold">Book Name *</label>
+            <input
+              type="text"
+              class="form-control form-control-lg"
+              id="bookName"
+              [(ngModel)]="currentBook.bookName"
+              name="bookName"
+              placeholder="Enter book name"
+              required>
+          </div>
+
+          <div class="mb-3">
+            <label for="author" class="form-label fw-bold">Author *</label>
+            <input
+              type="text"
+              class="form-control form-control-lg"
+              id="author"
+              [(ngModel)]="currentBook.author"
+              name="author"
+              placeholder="Enter author name"
+              required>
+          </div>
+
+          <div class="mb-3">
+            <label for="description" class="form-label fw-bold">Description *</label>
+            <textarea
+              class="form-control"
+              id="description"
+              rows="4"
+              [(ngModel)]="currentBook.description"
+              name="description"
+              placeholder="Enter book description"
+              required></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeModal()">
+          <i class="bi bi-x-circle"></i> Cancel
+        </button>
+        <button type="button" class="btn btn-primary" (click)="saveBook()" [disabled]="loading">
+          <span class="spinner-border spinner-border-sm me-2" *ngIf="loading"></span>
+          <i class="bi bi-check-circle" *ngIf="!loading"></i>
+          {{ isEditMode ? 'Update Book' : 'Create Book' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Backdrop -->
+<div class="modal-backdrop fade" [class.show]="showModal" *ngIf="showModal"></div>

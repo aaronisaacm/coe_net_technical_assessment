@@ -1,0 +1,62 @@
+.stat-card {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2) !important;
+}
+
+.stat-icon {
+  font-size: 3rem;
+  opacity: 0.3;
+}
+
+.stretched-link::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+  content: "";
+}
+
+.bi {
+  font-family: 'bootstrap-icons' !important;
+}
+
+/* Bootstrap Icons fallback */
+.bi-speedometer2::before { content: "📊"; }
+.bi-book::before { content: "📚"; }
+.bi-people::before { content: "👥"; }
+.bi-journal-check::before { content: "📋"; }
+.bi-exclamation-triangle::before { content: "⚠️"; }
+.bi-clock-history::before { content: "🕐"; }
+.bi-person-circle::before { content: "👤"; }
+.bi-calendar-x::before { content: "📅"; }
+.bi-check-circle::before { content: "✅"; }
+.bi-arrow-right::before { content: "→"; }
+.bi-lightning::before { content: "⚡"; }
+.bi-person::before { content: "👤"; }
+
+.card-header {
+  border-bottom: 2px solid #dee2e6;
+}
+
+.list-group-item {
+  border-left: 0;
+  border-right: 0;
+}
+
+.list-group-item:first-child {
+  border-top: 0;
+}
+
+.list-group-item:last-child {
+  border-bottom: 0;
+}
+
